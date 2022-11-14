@@ -82,10 +82,10 @@ spec:
           # # When not set, defaults to "local" unless running in GKE, otherwies auto-sets to gcp 
           # - name: ENV_PLATFORM 
           #   value: "aws"
-          - name: OTEL_EXPORTER_OTLP_TRACES_ENDPOINT
-            value: "http://otelcollector:4317"
-          - name: OTEL_RESOURCE_ATTRIBUTES
-            value: "service.name=frontend,service.version=1.0.0"
+          - name: DISABLE_TRACING
+            value: "1"
+          - name: DISABLE_PROFILER
+            value: "1"
           # - name: CYMBAL_BRANDING
           #   value: "true"
           resources:
