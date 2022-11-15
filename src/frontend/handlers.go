@@ -17,6 +17,8 @@ package main
 import (
 	"context"
 	"fmt"
+	"github.com/prometheus/client_golang/prometheus"
+	"github.com/prometheus/client_golang/prometheus/promauto"
 	"html/template"
 	"math/rand"
 	"net"
@@ -206,6 +208,13 @@ func (fe *frontendServer) productHandler(w http.ResponseWriter, r *http.Request)
 	}
 }
 
+var (
+	addToCart = promauto.NewCounter(prometheus.CounterOpts{
+		Name: "frontend_add_to_cart_count",
+		Help: "The total number of times items added to cart",
+	})
+)
+
 func (fe *frontendServer) addToCartHandler(w http.ResponseWriter, r *http.Request) {
 	log := r.Context().Value(ctxKeyLog{}).(logrus.FieldLogger)
 	quantity, _ := strconv.ParseUint(r.FormValue("quantity"), 10, 32)
@@ -226,6 +235,7 @@ func (fe *frontendServer) addToCartHandler(w http.ResponseWriter, r *http.Reques
 		renderHTTPError(log, r, w, errors.Wrap(err, "failed to add to cart"), http.StatusInternalServerError)
 		return
 	}
+	addToCart.Inc()
 	w.Header().Set("location", "/cart")
 	w.WriteHeader(http.StatusFound)
 }
