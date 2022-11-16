@@ -164,12 +164,12 @@ data:
     - name: default-receiver
       email_configs:
       - to: observability.workshop@alertmanager.com
-        smarthost: smtp4dev.default.svc.cluster.local:25
+        smarthost: smtp4dev.kube-smtp.svc.cluster.local:25
         require_tls: false
     - name: deadmanswitch-receiver
       email_configs:
       - to: observability.workshop@alertmanager.com
-        smarthost: smtp4dev.default.svc.cluster.local:25
+        smarthost: smtp4dev.kube-smtp.svc.cluster.local:25
         require_tls: false
 ---
 # Source: prometheus/templates/dashboards-configmap.yaml
