@@ -147,7 +147,7 @@ func (plat *platformDetails) setPlatformDetails(env string) {
 
 var productLatency = prometheus.NewHistogramVec(
 	prometheus.HistogramOpts{
-		Name:    "get_product_duration_seconds",
+		Name:    "frontend_get_product_duration_seconds",
 		Help:    "Latency of get_products request in second.",
 		Buckets: prometheus.LinearBuckets(0.01, 0.05, 10),
 	},
