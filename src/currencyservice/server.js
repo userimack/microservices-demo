@@ -26,15 +26,34 @@ else {
     }
   });
 }
+console.log("Tracing enabled.")
+const { NodeTracerProvider } = require('@opentelemetry/sdk-trace-node');
+const { SimpleSpanProcessor } = require('@opentelemetry/sdk-trace-base');
+const { GrpcInstrumentation } = require('@opentelemetry/instrumentation-grpc');
+const { registerInstrumentations } = require('@opentelemetry/instrumentation');
+const { OTLPTraceExporter } = require("@opentelemetry/exporter-otlp-grpc");
+const { Resource } = require("@opentelemetry/resources");
+const { SemanticResourceAttributes } = require("@opentelemetry/semantic-conventions");
 
 
-if(process.env.DISABLE_TRACING) {
-  console.log("Tracing disabled.")
-}
-else {
-  console.log("Tracing enabled.")
-  require('@google-cloud/trace-agent').start();
-}
+const resource =
+  Resource.default().merge(
+    new Resource({
+      [SemanticResourceAttributes.SERVICE_NAME]: "currencyservice",
+      [SemanticResourceAttributes.SERVICE_VERSION]: "0.1.0",
+    })
+  );
+
+const provider = new NodeTracerProvider({
+    resource: resource,
+});
+
+provider.addSpanProcessor(new SimpleSpanProcessor(new OTLPTraceExporter()));
+provider.register();
+
+registerInstrumentations({
+  instrumentations: [new GrpcInstrumentation()]
+});
 
 if(process.env.DISABLE_DEBUGGER) {
   console.log("Debugger disabled.")
