@@ -10,8 +10,6 @@ using Microsoft.Extensions.Hosting;
 using cartservice.cartstore;
 using cartservice.services;
 using Microsoft.Extensions.Caching.StackExchangeRedis;
-using OpenTelemetry.Trace;
-using OpenTelemetry.Resources;
 
 namespace cartservice
 {
@@ -53,20 +51,6 @@ namespace cartservice
 
 
             services.AddGrpc();
-
-            
-            string serviceName = "cartservice";
-            string jaegerHost = "jaeger.kube-tracing.svc.cluster.local";
-            int jaegerPort = 4317;
-
-            services.AddOpenTelemetryTracing((builder) => builder
-                        .ConfigureResource(r => r.AddService(serviceName))
-                        .AddAspNetCoreInstrumentation()
-                        .AddJaegerExporter(jaegerOptions =>
-                        {
-                            jaegerOptions.AgentHost = jaegerHost;
-                            jaegerOptions.AgentPort = jaegerPort;
-                        }));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
