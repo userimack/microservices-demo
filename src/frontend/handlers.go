@@ -145,7 +145,23 @@ func (plat *platformDetails) setPlatformDetails(env string) {
 	}
 }
 
+var productLatency = prometheus.NewHistogramVec(
+	prometheus.HistogramOpts{
+		Name:    "get_product_duration_seconds",
+		Help:    "Latency of get_products request in second.",
+		Buckets: prometheus.LinearBuckets(0.01, 0.05, 10),
+	},
+	[]string{""},
+)
+
 func (fe *frontendServer) productHandler(w http.ResponseWriter, r *http.Request) {
+	timer := prometheus.NewTimer(prometheus.ObserverFunc(func(v float64) {
+		productLatency.WithLabelValues().Observe(v)
+	}))
+	defer func() {
+		timer.ObserveDuration()
+	}()
+
 	log := r.Context().Value(ctxKeyLog{}).(logrus.FieldLogger)
 	id := mux.Vars(r)["id"]
 	if id == "" {
