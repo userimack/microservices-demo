@@ -34,6 +34,10 @@ import (
 	"go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracegrpc"
 	"go.opentelemetry.io/otel/propagation"
 	sdktrace "go.opentelemetry.io/otel/sdk/trace"
+
+	metrics "github.com/slok/go-http-metrics/metrics/prometheus"
+	"github.com/slok/go-http-metrics/middleware"
+	middlewarestd "github.com/slok/go-http-metrics/middleware/std"
 )
 
 const (
@@ -129,6 +133,10 @@ func main() {
 	mustConnGRPC(ctx, &svc.checkoutSvcConn, svc.checkoutSvcAddr)
 	mustConnGRPC(ctx, &svc.adSvcConn, svc.adSvcAddr)
 
+	mdlw := middleware.New(middleware.Config{
+		Recorder: metrics.NewRecorder(metrics.Config{}),
+	})
+
 	r := mux.NewRouter()
 	r.Use(otelmux.Middleware("server"))
 	r.HandleFunc("/", svc.homeHandler).Methods(http.MethodGet, http.MethodHead)
@@ -147,6 +155,7 @@ func main() {
 	var handler http.Handler = r
 	handler = &logHandler{log: log, next: handler} // add logging
 	handler = ensureSessionID(handler)             // add session ID
+	handler = middlewarestd.Handler("", mdlw, handler)
 
 	log.Infof("starting server on " + addr + ":" + srvPort)
 	log.Fatal(http.ListenAndServe(addr+":"+srvPort, handler))
