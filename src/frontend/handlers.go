@@ -44,7 +44,7 @@ type platformDetails struct {
 var (
 	isCymbalBrand = "true" == strings.ToLower(os.Getenv("CYMBAL_BRANDING"))
 	templates     = template.Must(template.New("").
-		Funcs(template.FuncMap{
+			Funcs(template.FuncMap{
 			"renderMoney":        renderMoney,
 			"renderCurrencyLogo": renderCurrencyLogo,
 		}).ParseGlob("templates/*.html"))
@@ -145,7 +145,7 @@ func (plat *platformDetails) setPlatformDetails(env string) {
 	}
 }
 
-var productLatency = prometheus.NewHistogramVec(
+var productLatency = promauto.NewHistogramVec(
 	prometheus.HistogramOpts{
 		Name:    "frontend_get_product_duration_seconds",
 		Help:    "Latency of get_products request in second.",
