@@ -155,8 +155,9 @@ var productLatency = promauto.NewHistogramVec(
 )
 
 func (fe *frontendServer) productHandler(w http.ResponseWriter, r *http.Request) {
+	var status string
 	timer := prometheus.NewTimer(prometheus.ObserverFunc(func(v float64) {
-		productLatency.WithLabelValues().Observe(v)
+		productLatency.WithLabelValues(status).Observe(v)
 	}))
 	defer func() {
 		timer.ObserveDuration()
