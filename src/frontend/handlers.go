@@ -151,7 +151,7 @@ var productLatency = promauto.NewHistogramVec(
 		Help:    "Latency of get_products request in second.",
 		Buckets: prometheus.LinearBuckets(0.01, 0.05, 10),
 	},
-	[]string{""},
+	[]string{"status"},
 )
 
 func (fe *frontendServer) productHandler(w http.ResponseWriter, r *http.Request) {
