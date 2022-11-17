@@ -44,7 +44,7 @@ type platformDetails struct {
 var (
 	isCymbalBrand = "true" == strings.ToLower(os.Getenv("CYMBAL_BRANDING"))
 	templates     = template.Must(template.New("").
-			Funcs(template.FuncMap{
+		Funcs(template.FuncMap{
 			"renderMoney":        renderMoney,
 			"renderCurrencyLogo": renderCurrencyLogo,
 		}).ParseGlob("templates/*.html"))
@@ -226,9 +226,9 @@ func (fe *frontendServer) productHandler(w http.ResponseWriter, r *http.Request)
 }
 
 var (
-	addToCartCounter = promauto.NewCounter(prometheus.CounterOpts{
-		Name: "frontend_add_to_cart_total",
-		Help: "The total number of times items added to cart",
+	addToCartCounter = promauto.NewGauge(prometheus.GaugeOpts{
+		Name: "frontend_cart_items_total",
+		Help: "The total number of items in cart currently",
 	})
 )
 
@@ -265,6 +265,8 @@ func (fe *frontendServer) emptyCartHandler(w http.ResponseWriter, r *http.Reques
 		renderHTTPError(log, r, w, errors.Wrap(err, "failed to empty cart"), http.StatusInternalServerError)
 		return
 	}
+
+	addToCartCounter.Dec()
 	w.Header().Set("location", "/")
 	w.WriteHeader(http.StatusFound)
 }
