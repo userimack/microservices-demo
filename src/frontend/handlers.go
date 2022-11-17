@@ -154,6 +154,13 @@ var productLatency = promauto.NewHistogramVec(
 	[]string{"status"},
 )
 
+var (
+	productPageViewsCounter = promauto.NewCounterVec(prometheus.CounterOpts{
+		Name: "frontend_product_page_views_total",
+		Help: "The total number of page views for products",
+	}, []string{"product_name"})
+)
+
 func (fe *frontendServer) productHandler(w http.ResponseWriter, r *http.Request) {
 	var status string
 	timer := prometheus.NewTimer(prometheus.ObserverFunc(func(v float64) {
@@ -177,6 +184,8 @@ func (fe *frontendServer) productHandler(w http.ResponseWriter, r *http.Request)
 		renderHTTPError(log, r, w, errors.Wrap(err, "could not retrieve product"), http.StatusInternalServerError)
 		return
 	}
+	productPageViewsCounter.WithLabelValues(p.Name, "product_name").Inc()
+
 	currencies, err := fe.getCurrencies(r.Context())
 	if err != nil {
 		renderHTTPError(log, r, w, errors.Wrap(err, "could not retrieve currencies"), http.StatusInternalServerError)
