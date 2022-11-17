@@ -233,7 +233,7 @@ func (fe *frontendServer) productHandler(w http.ResponseWriter, r *http.Request)
 }
 
 var (
-	addToCartCounter = promauto.NewGauge(prometheus.GaugeOpts{
+	totalCartItemsGauge = promauto.NewGauge(prometheus.GaugeOpts{
 		Name: "frontend_cart_items_total",
 		Help: "The total number of items in cart currently",
 	})
@@ -259,7 +259,7 @@ func (fe *frontendServer) addToCartHandler(w http.ResponseWriter, r *http.Reques
 		renderHTTPError(log, r, w, errors.Wrap(err, "failed to add to cart"), http.StatusInternalServerError)
 		return
 	}
-	addToCartCounter.Inc()
+	totalCartItemsGauge.Inc()
 	w.Header().Set("location", "/cart")
 	w.WriteHeader(http.StatusFound)
 }
@@ -273,7 +273,6 @@ func (fe *frontendServer) emptyCartHandler(w http.ResponseWriter, r *http.Reques
 		return
 	}
 
-	addToCartCounter.Dec()
 	w.Header().Set("location", "/")
 	w.WriteHeader(http.StatusFound)
 }
@@ -418,7 +417,7 @@ func (fe *frontendServer) placeOrderHandler(w http.ResponseWriter, r *http.Reque
 		return
 	}
 
-	if err := templates.ExecuteTemplate(w, "order", map[string]interface{}{
+	err = templates.ExecuteTemplate(w, "order", map[string]interface{}{
 		"session_id":        sessionID(r),
 		"request_id":        r.Context().Value(ctxKeyRequestID{}),
 		"user_currency":     currentCurrency(r),
@@ -431,9 +430,14 @@ func (fe *frontendServer) placeOrderHandler(w http.ResponseWriter, r *http.Reque
 		"platform_name":     plat.provider,
 		"is_cymbal_brand":   isCymbalBrand,
 		"deploymentDetails": deploymentDetailsMap,
-	}); err != nil {
+	})
+
+	if err != nil {
 		log.Println(err)
+		return
 	}
+
+	totalCartItemsGauge.Sub(float64(len(order.GetOrder().Items)))
 }
 
 func (fe *frontendServer) logoutHandler(w http.ResponseWriter, r *http.Request) {
