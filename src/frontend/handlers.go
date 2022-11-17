@@ -353,13 +353,6 @@ func (fe *frontendServer) viewCartHandler(w http.ResponseWriter, r *http.Request
 	}
 }
 
-var (
-	checkoutCounter = promauto.NewCounter(prometheus.CounterOpts{
-		Name: "frontend_checkout_cart_total",
-		Help: "The total number of times cart checked out",
-	})
-)
-
 func (fe *frontendServer) placeOrderHandler(w http.ResponseWriter, r *http.Request) {
 	log := r.Context().Value(ctxKeyLog{}).(logrus.FieldLogger)
 	log.Debug("placing order")
@@ -399,8 +392,6 @@ func (fe *frontendServer) placeOrderHandler(w http.ResponseWriter, r *http.Reque
 		return
 	}
 	log.WithField("order", order.GetOrder().GetOrderId()).Info("order placed")
-
-	checkoutCounter.Inc()
 
 	order.GetOrder().GetItems()
 	recommendations, _ := fe.getRecommendations(r.Context(), sessionID(r), nil)
