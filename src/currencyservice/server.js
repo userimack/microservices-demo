@@ -162,11 +162,11 @@ function convert (call, callback) {
       result.nanos = Math.floor(result.nanos);
       result.currency_code = request.to_code;
 
-      logger.info(`conversion request successful`);
+      console.log(`conversion request successful`);
       callback(null, result);
     });
   } catch (err) {
-    logger.error(`conversion request failed: ${err}`);
+    console.log(`conversion request failed: ${err}`);
     callback(err.message);
   }
 }
