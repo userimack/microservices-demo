@@ -184,7 +184,7 @@ func (fe *frontendServer) productHandler(w http.ResponseWriter, r *http.Request)
 		renderHTTPError(log, r, w, errors.Wrap(err, "could not retrieve product"), http.StatusInternalServerError)
 		return
 	}
-	productPageViewsCounter.WithLabelValues(p.Name, "product_name").Inc()
+	productPageViewsCounter.WithLabelValues(p.Name).Inc()
 
 	currencies, err := fe.getCurrencies(r.Context())
 	if err != nil {
