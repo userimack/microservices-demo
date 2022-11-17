@@ -44,7 +44,7 @@ type platformDetails struct {
 var (
 	isCymbalBrand = "true" == strings.ToLower(os.Getenv("CYMBAL_BRANDING"))
 	templates     = template.Must(template.New("").
-		Funcs(template.FuncMap{
+			Funcs(template.FuncMap{
 			"renderMoney":        renderMoney,
 			"renderCurrencyLogo": renderCurrencyLogo,
 		}).ParseGlob("templates/*.html"))
@@ -145,13 +145,12 @@ func (plat *platformDetails) setPlatformDetails(env string) {
 	}
 }
 
-var productLatency = promauto.NewHistogramVec(
+var productLatency = promauto.NewHistogram(
 	prometheus.HistogramOpts{
 		Name:    "frontend_get_product_duration_seconds",
 		Help:    "Latency of get_products request in second.",
 		Buckets: prometheus.LinearBuckets(0.01, 0.05, 10),
 	},
-	[]string{"status"},
 )
 
 var (
@@ -162,12 +161,11 @@ var (
 )
 
 func (fe *frontendServer) productHandler(w http.ResponseWriter, r *http.Request) {
-	var status string
 	timer := prometheus.NewTimer(prometheus.ObserverFunc(func(v float64) {
-		productLatency.WithLabelValues(status).Observe(v)
+		productLatency.Observe(v)
 	}))
 	defer func() {
-		timer.ObserveDuration()
+		timer.ObserveDuration().Seconds()
 	}()
 
 	log := r.Context().Value(ctxKeyLog{}).(logrus.FieldLogger)
