@@ -35,7 +35,6 @@ RUN GRPC_HEALTH_PROBE_VERSION=v0.4.13 && \
 
 WORKDIR /app
 COPY --from=builder /app .
-COPY agent/opentelemetry-javaagent.jar .
 
 EXPOSE 9555
 ENTRYPOINT ["/app/build/install/hipstershop/bin/AdService"]
