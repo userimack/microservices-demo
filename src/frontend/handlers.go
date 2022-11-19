@@ -44,7 +44,7 @@ type platformDetails struct {
 var (
 	isCymbalBrand = "true" == strings.ToLower(os.Getenv("CYMBAL_BRANDING"))
 	templates     = template.Must(template.New("").
-		Funcs(template.FuncMap{
+			Funcs(template.FuncMap{
 			"renderMoney":        renderMoney,
 			"renderCurrencyLogo": renderCurrencyLogo,
 		}).ParseGlob("templates/*.html"))
@@ -277,7 +277,15 @@ func (fe *frontendServer) emptyCartHandler(w http.ResponseWriter, r *http.Reques
 	w.WriteHeader(http.StatusFound)
 }
 
+var (
+	totalCartViews = promauto.NewCounter(prometheus.CounterOpts{
+		Name: "frontend_cart_views_total",
+		Help: "Total cart views",
+	})
+)
+
 func (fe *frontendServer) viewCartHandler(w http.ResponseWriter, r *http.Request) {
+	totalCartViews.Inc()
 	log := r.Context().Value(ctxKeyLog{}).(logrus.FieldLogger)
 	log.Debug("view user cart")
 	currencies, err := fe.getCurrencies(r.Context())
