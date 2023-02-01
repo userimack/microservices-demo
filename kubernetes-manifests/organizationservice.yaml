@@ -21,6 +21,8 @@ spec:
     metadata:
       labels:
         app: organizationservice
+        annotations:
+          prometheus/springactuator: "true"
     spec:
       serviceAccountName: default
       terminationGracePeriodSeconds: 5
