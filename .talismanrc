@@ -9,4 +9,8 @@ fileignoreconfig:
   checksum: bf828da964007c3876518c563ccc2c3ccf9cdf0462d34f33c3b0054df568148a
 - filename: src/departmentservice/src/main/resources/application.yaml
   checksum: d42a39e6ddc170cb1072bcc6ba94d79f87a52e246417b82dc2507fb9f482e761
+- filename: kubernetes-manifests/organizationservice.yaml
+  checksum: c4aff40e7034fa8fd7f98366ce3f3ec4e36c69dc5e9bad5b06cc9310c86334fa
+- filename: src/organizationservice/src/main/resources/application.yaml
+  checksum: 93f0577d71738fdd106c3a8e9440201cda8d00fba28894f55130fa732813f5ec
 version: ""

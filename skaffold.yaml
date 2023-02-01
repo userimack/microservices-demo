@@ -48,6 +48,8 @@ build:
     context: src/employeeservice
   - image: departmentservice
     context: src/departmentservice
+  - image: organizationservice
+    context: src/organizationservice
   tagPolicy:
     gitCommit: {}
   local:
@@ -70,6 +72,7 @@ deploy:
     - ./kubernetes-manifests/smtp-dev.yaml
     - ./kubernetes-manifests/employeeservice.yaml
     - ./kubernetes-manifests/departmentservice.yaml
+    - ./kubernetes-manifests/organizationservice.yaml
 profiles:
 # "gcb" profile allows building and pushing the images
 # on Google Container Builder without requiring docker
@@ -97,19 +100,19 @@ profiles:
       path: /build/artifacts/7/docker/dockerfile
       value: Dockerfile.debug
 
-#---
-#
-#apiVersion: skaffold/v2beta18
-#kind: Config
-#metadata:
-#  name: loadgenerator
-#requires:
-#  - configs: [app]
-#build:
-#  artifacts:
-#  - image: loadgenerator
-#    context: src/loadgenerator
-#deploy:
-#  kubectl:
-#    manifests:
-#    - ./kubernetes-manifests/loadgenerator.yaml
+---
+
+apiVersion: skaffold/v2beta18
+kind: Config
+metadata:
+  name: loadgenerator
+requires:
+  - configs: [app]
+build:
+  artifacts:
+  - image: loadgenerator
+    context: src/loadgenerator
+deploy:
+  kubectl:
+    manifests:
+    - ./kubernetes-manifests/loadgenerator.yaml
