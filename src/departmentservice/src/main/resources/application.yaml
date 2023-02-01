@@ -12,3 +12,7 @@ spring:
 feign:
   name: employee
   url: http://employeeservice/
+#  url: http://localhost:8080/
+
+springdoc:
+  show-actuator: true
