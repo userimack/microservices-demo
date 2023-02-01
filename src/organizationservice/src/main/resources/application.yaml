@@ -3,14 +3,19 @@ spring:
     name: organizationservice
   data:
     mongodb:
-      #      uri: "mongodb://localhost:27017/sampledb"
+#      uri: "mongodb://localhost:27017/sampledb"
       uri: "mongodb://${MONGO_USERNAME}:${MONGO_PASSWORD}@${MONGO_HOSTNAME}:27017/${MONGO_DATABASE}?authSource=admin"
 
 #server:
-#  port: 8081
+#  port: 8082
 
 feign:
   employee:
     url: http://employeeservice/
+#    url: http://localhost:8080/
   department:
     url: http://departmentservice/
+#    url: http://localhost:8081/
+
+springdoc:
+  show-actuator: true
