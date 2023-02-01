@@ -1,0 +1,8 @@
+fileignoreconfig:
+- filename: kubernetes-manifests/mongodb.yaml
+  checksum: c8eafba52964d23ae899a71ba11d4435c68e0b059e533f14a95a1d34668ba499
+- filename: kubernetes-manifests/employeeservice.yaml
+  checksum: 0652dddfb40ec79ddb5973abf45bc5c1132070eb7039699fcff86d2f02c4993d
+- filename: src/employeeservice/src/main/resources/application.yaml
+  checksum: b59898f4ef0b20cc6917e3caaaf6e7509960a5da4ba781fd62231f578f02dfef
+version: ""

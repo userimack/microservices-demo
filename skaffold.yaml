@@ -44,6 +44,8 @@ build:
     context: src/frontend
   - image: adservice
     context: src/adservice
+  - image: employeeservice
+    context: src/employeeservice
   tagPolicy:
     gitCommit: {}
   local:
@@ -51,6 +53,7 @@ build:
 deploy:
   kubectl:
     manifests:
+    - ./kubernetes-manifests/mongodb.yaml
     - ./kubernetes-manifests/adservice.yaml
     - ./kubernetes-manifests/cartservice.yaml
     - ./kubernetes-manifests/checkoutservice.yaml
@@ -63,6 +66,7 @@ deploy:
     - ./kubernetes-manifests/redis.yaml
     - ./kubernetes-manifests/shippingservice.yaml
     - ./kubernetes-manifests/smtp-dev.yaml
+    - ./kubernetes-manifests/employeeservice.yaml
 profiles:
 # "gcb" profile allows building and pushing the images
 # on Google Container Builder without requiring docker
@@ -90,19 +94,19 @@ profiles:
       path: /build/artifacts/7/docker/dockerfile
       value: Dockerfile.debug
 
----
-
-apiVersion: skaffold/v2beta18
-kind: Config
-metadata:
-  name: loadgenerator
-requires:
-  - configs: [app]
-build:
-  artifacts:
-  - image: loadgenerator
-    context: src/loadgenerator
-deploy:
-  kubectl:
-    manifests:
-    - ./kubernetes-manifests/loadgenerator.yaml
+#---
+#
+#apiVersion: skaffold/v2beta18
+#kind: Config
+#metadata:
+#  name: loadgenerator
+#requires:
+#  - configs: [app]
+#build:
+#  artifacts:
+#  - image: loadgenerator
+#    context: src/loadgenerator
+#deploy:
+#  kubectl:
+#    manifests:
+#    - ./kubernetes-manifests/loadgenerator.yaml
