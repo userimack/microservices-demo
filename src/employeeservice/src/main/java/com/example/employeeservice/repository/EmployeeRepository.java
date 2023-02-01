@@ -7,7 +7,7 @@ import org.springframework.data.repository.CrudRepository;
 
 public interface EmployeeRepository extends CrudRepository<Employee, String> {
 
-    List<Employee> findByDepartmentId(Long departmentId);
-    List<Employee> findByOrganizationId(Long organizationId);
+    List<Employee> findByDepartmentId(String departmentId);
+    List<Employee> findByOrganizationId(String organizationId);
 
 }

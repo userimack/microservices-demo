@@ -46,6 +46,8 @@ build:
     context: src/adservice
   - image: employeeservice
     context: src/employeeservice
+  - image: departmentservice
+    context: src/departmentservice
   tagPolicy:
     gitCommit: {}
   local:
@@ -67,6 +69,7 @@ deploy:
     - ./kubernetes-manifests/shippingservice.yaml
     - ./kubernetes-manifests/smtp-dev.yaml
     - ./kubernetes-manifests/employeeservice.yaml
+    - ./kubernetes-manifests/departmentservice.yaml
 profiles:
 # "gcb" profile allows building and pushing the images
 # on Google Container Builder without requiring docker

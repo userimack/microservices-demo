@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: employeeservice
+  name: departmentservice
 data:
   logging.pattern.console: "%d{HH:mm:ss} ${LOG_LEVEL_PATTERN:-%5p} %m%n"
   spring.cloud.kubernetes.discovery.all-namespaces: "true"
@@ -9,18 +9,18 @@ data:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: employeeservice
+  name: departmentservice
   labels:
-    app: employeeservice
+    app: departmentservice
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: employeeservice
+      app: departmentservice
   template:
     metadata:
       labels:
-        app: employeeservice
+        app: departmentservice
     spec:
       serviceAccountName: default
       terminationGracePeriodSeconds: 5
@@ -38,7 +38,7 @@ spec:
                 - all
             privileged: false
             readOnlyRootFilesystem: false
-          image: employeeservice
+          image: departmentservice
           ports:
             - containerPort: 8080
           env:
@@ -65,14 +65,14 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: employeeservice
+  name: departmentservice
   labels:
-    app: employeeservice
+    app: departmentservice
 spec:
   ports:
     - port: 80
       targetPort: 8080
       protocol: TCP
   selector:
-    app: employeeservice
+    app: departmentservice
   type: ClusterIP
