@@ -78,3 +78,15 @@ spec:
   selector:
     app: employeeservice
   type: ClusterIP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: employeeservice-external
+spec:
+  type: LoadBalancer
+  selector:
+    app: employeeservice
+  ports:
+    - name: http
+      port: 80

@@ -78,3 +78,15 @@ spec:
   selector:
     app: organizationservice
   type: ClusterIP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: organizationservice-external
+spec:
+  type: LoadBalancer
+  selector:
+    app: organizationservice
+  ports:
+    - name: http
+      port: 80

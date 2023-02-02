@@ -78,3 +78,15 @@ spec:
   selector:
     app: departmentservice
   type: ClusterIP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: departmentservice-external
+spec:
+  type: LoadBalancer
+  selector:
+    app: departmentservice
+  ports:
+    - name: http
+      port: 80
