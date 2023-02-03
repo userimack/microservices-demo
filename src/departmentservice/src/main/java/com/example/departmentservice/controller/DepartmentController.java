@@ -17,6 +17,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
+import static net.logstash.logback.argument.StructuredArguments.keyValue;
+
 
 
 @RestController
@@ -42,7 +44,7 @@ public class DepartmentController {
 	
 	@GetMapping("/{id}")
 	public Department findById(@PathVariable("id") String id) {
-		LOGGER.info("Department find: id={}", id);
+		LOGGER.info("Department find: id={}", id, keyValue("path", "/{id}"));
 		return repository.findById(id).get();
 	}
 	
@@ -54,13 +56,13 @@ public class DepartmentController {
 	
 	@GetMapping("/organization/{organizationId}")
 	public List<Department> findByOrganization(@PathVariable("organizationId") String organizationId) {
-		LOGGER.info("Department find: organizationId={}", organizationId);
+		LOGGER.info("Department find: organizationId={}", organizationId, keyValue("path", "/organization/{organizationId}"));
 		return repository.findByOrganizationId(organizationId);
 	}
 	
 	@GetMapping("/organization/{organizationId}/with-employees")
 	public List<Department> findByOrganizationWithEmployees(@PathVariable("organizationId") String organizationId) {
-		LOGGER.info("Department find: organizationId={}", organizationId);
+		LOGGER.info("Department find: organizationId={}", organizationId, keyValue("path", "/organization/{organizationId}/with-employees"));
 		List<Department> departments = repository.findByOrganizationId(organizationId);
 		departments.forEach(d -> d.setEmployees(employeeClient.findByDepartment(d.getId())));
 		return departments;
