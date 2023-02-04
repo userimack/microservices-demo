@@ -18,13 +18,20 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 import static net.logstash.logback.argument.StructuredArguments.keyValue;
-
+import io.micrometer.core.instrument.Counter;
+import io.micrometer.core.instrument.MeterRegistry;
 
 
 @RestController
 public class DepartmentController {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(DepartmentController.class);
+
+	private final Counter departmentSearchCounter;
+
+	public DepartmentController(MeterRegistry registry) {
+		departmentSearchCounter = registry.counter("departmentSearchCounter");
+	}
 	
 	@Autowired
 	DepartmentRepository repository;
@@ -44,6 +51,7 @@ public class DepartmentController {
 	
 	@GetMapping("/{id}")
 	public Department findById(@PathVariable("id") String id) {
+		departmentSearchCounter.increment();
 		LOGGER.info("Department find: id={}", id, keyValue("path", "/{id}"));
 		return repository.findById(id).get();
 	}
